@@ -9,6 +9,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # try:
-execute(['scrapy', 'crawl', 'jobbole'])
+# execute(['scrapy', 'crawl', 'jobbole'])
+execute(['scrapy', 'crawl', 'jiuyi160'])
 # finally:
 # ExportExcel.export()

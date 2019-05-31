@@ -104,4 +104,4 @@ MYSQL_HOST = "localhost"
 MYSQL_DBNAME = "article_spider"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "123456"
-MYSQL_PORT = 8889
+MYSQL_PORT = 3306
