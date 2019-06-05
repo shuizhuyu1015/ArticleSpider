@@ -8,33 +8,14 @@
 import scrapy
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
-from datetime import datetime
-import re
+
+from ArticleSpider.utils.common import date_convert, get_nums
 
 
 class ArticlespiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
-
-
-def date_convert(value, loader_context):
-    try:
-        value = value.strip().replace('·', '').strip()
-        create_date = datetime.strptime(value, loader_context.get('date_format', '')).date()
-    except Exception as e:
-        create_date = datetime.now().date()
-    return create_date
-
-
-def get_nums(value):
-    reg_num = ".*?(\d+).*"
-    match_re = re.match(reg_num, value.strip())
-    if match_re:
-        nums = int(match_re.group(1))
-    else:
-        nums = 0
-    return nums
 
 
 def remove_comment_tags(value):
