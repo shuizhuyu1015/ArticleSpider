@@ -114,11 +114,18 @@ class JSPageMiddleware(object):
             time.sleep(2)
             # 拿到外部传入的指定页码
             current_page = request.meta.get('current_page', 1)
+            print('准备访问第 {0} 页'.format(current_page))
             if current_page > 1:
                 # 如果要获取的不是第一页，则点击下一页进行获取
-                next_page = spider.browser.find_element_by_link_text('下一页')
-                next_page.click()
+                try:
+                    next_page = spider.browser.find_element_by_link_text('下一页')
+                    next_page.click()
+                except Exception as e:
+                    print('找不到下一页了')
+                    spider.browser.quit()
 
-            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source,
-                                encoding='utf-8', request=request)
+            return HtmlResponse(url=spider.browser.current_url,
+                                body=spider.browser.page_source,
+                                encoding='utf-8',
+                                request=request)
 

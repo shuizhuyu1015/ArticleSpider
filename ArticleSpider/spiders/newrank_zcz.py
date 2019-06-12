@@ -16,7 +16,7 @@ class NewrankZczSpider(scrapy.Spider):
     start_urls = ['https://cc.newrank.cn/content-management.html']
 
     def __init__(self):
-        self.browser = webdriver.Chrome(executable_path='/Users/tianguanjia/Downloads/chromedriver')
+        self.browser = webdriver.Chrome(executable_path='/Users/gulei/Downloads/chromedriver')
         super(NewrankZczSpider, self).__init__()
         dispatcher.connect(self.spider_closed, signals.spider_closed)
 
@@ -57,4 +57,7 @@ class NewrankZczSpider(scrapy.Spider):
             if next_page:
                 t_selector = Selector(text=self.browser.page_source)
                 cur = int(t_selector.css(".cur::text").extract_first(1))
-                yield scrapy.Request(response.url, meta={'current_page': cur+1}, dont_filter=True, callback=self.parse)
+                yield scrapy.Request(response.url,
+                                     meta={'current_page': cur+1},
+                                     dont_filter=True,
+                                     callback=self.parse)
