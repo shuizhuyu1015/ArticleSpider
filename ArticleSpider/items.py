@@ -141,3 +141,32 @@ class Jiuyi160ArticleItem(scrapy.Item):
         return insert_sql, params
 
 
+class NewrankArticleItem(scrapy.Item):
+    title = scrapy.Field()
+    url = scrapy.Field()
+    url_id = scrapy.Field()
+    author = scrapy.Field()
+    tag = scrapy.Field()
+    publish_time = scrapy.Field(
+        input_processor=MapCompose(date_convert, date_format="%Y-%m-%d %H:%M:%S")
+    )
+    buy_count = scrapy.Field(
+        input_processor=MapCompose(get_nums)
+    )
+
+    def get_insert_sql(self):
+        insert_sql = """
+                        insert into newrank(title, url, url_id, author, tag, publish_time, buy_count)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE buy_count=VALUES(buy_count);
+                    """
+        params = (
+            self.get("title", ''),
+            self.get("url", ''),
+            self.get('url_id', ''),
+            self.get("author", ''),
+            self.get("tag", ''),
+            self.get('publish_time', ''),
+            self.get('buy_count', 0)
+        )
+        return insert_sql, params

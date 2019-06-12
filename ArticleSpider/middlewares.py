@@ -5,7 +5,9 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-from scrapy import signals
+from scrapy import signals, Selector
+from scrapy.http import HtmlResponse
+import time
 
 
 class ArticlespiderSpiderMiddleware(object):
@@ -101,3 +103,22 @@ class ArticlespiderDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class JSPageMiddleware(object):
+    # 通过Chrome请求动态网页
+    def process_request(self, request, spider):
+        if spider.name == 'newrank_zcz':
+            spider.browser.get(request.url)
+            # 这里注意要先延迟几秒，让页面全部加载完毕
+            time.sleep(2)
+            # 拿到外部传入的指定页码
+            current_page = request.meta.get('current_page', 1)
+            if current_page > 1:
+                # 如果要获取的不是第一页，则点击下一页进行获取
+                next_page = spider.browser.find_element_by_link_text('下一页')
+                next_page.click()
+
+            return HtmlResponse(url=spider.browser.current_url, body=spider.browser.page_source,
+                                encoding='utf-8', request=request)
+
