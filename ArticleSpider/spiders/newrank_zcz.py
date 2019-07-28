@@ -16,7 +16,7 @@ class NewrankZczSpider(scrapy.Spider):
     start_urls = ['https://cc.newrank.cn/content-management.html']
 
     def __init__(self):
-        self.browser = webdriver.Chrome(executable_path='/Users/gulei/Downloads/chromedriver')
+        self.browser = webdriver.Chrome(executable_path='/Users/gulei/Documents/Python/Spider/chromedriver')
         super(NewrankZczSpider, self).__init__()
         dispatcher.connect(self.spider_closed, signals.spider_closed)
 
