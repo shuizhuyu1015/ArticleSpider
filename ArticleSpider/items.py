@@ -170,3 +170,34 @@ class NewrankArticleItem(scrapy.Item):
             self.get('buy_count', 0)
         )
         return insert_sql, params
+
+
+class A51jobItem(scrapy.Item):
+    # 岗位ID,非空字段
+    positionID = scrapy.Field()
+    # 岗位名称
+    positionName = scrapy.Field()
+    # 工资
+    salary = scrapy.Field()
+    # 工作年限
+    workYear = scrapy.Field()
+    # 学历
+    education = scrapy.Field()
+    # 岗位性质（全职兼职）
+    jobNature = scrapy.Field()
+    # 公司类型（是否融资）
+    financeStage = scrapy.Field()
+    # 公司规模
+    companySize = scrapy.Field()
+    # 公司名称
+    companyName = scrapy.Field()
+    # 业务方向
+    industryField = scrapy.Field()
+    # 经度
+    longitude = scrapy.Field()
+    # 纬度
+    latitude = scrapy.Field()
+    # 城市
+    city = scrapy.Field()
+    # 抓取日期
+    crawl_date = scrapy.Field()

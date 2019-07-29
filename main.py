@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # execute(['scrapy', 'crawl', 'jiuyi160'])
 # execute(['scrapy', 'crawl', 'codingke'])
 # execute(['scrapy', 'crawl', 'newrank_zcz'])
-execute(['scrapy', 'crawl', 'lagou'])
+execute(['scrapy', 'crawl', '51job'])
 
 # finally:
 # ExportExcel.export()
