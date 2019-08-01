@@ -4,6 +4,7 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
+import re
 
 import scrapy
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
@@ -53,6 +54,26 @@ def get_jiuyi_tags(value):
     elif 'yinghe' in value:
         tags = '基因'
     return tags
+
+
+def salary_convert(value):
+    # '5-6千/月'
+    # '1.5-2万/月'
+    # '10-15万/年'
+    salary = re.split('千|万', value)[0]
+    salary_list = salary.split('-')
+    salary0 = float(salary_list[0])
+    salary1 = float(salary_list[1])
+
+    if '千' in value:
+        salary0 = salary0 / 10
+        salary1 = salary1 / 10
+
+    if '年' in value:
+        salary0 = round(salary0 / 12, 1)
+        salary1 = round(salary1 / 12, 1)
+
+    return str(salary0) + '-' + str(salary1) + '万/月'
 
 
 class ArticleItemLoader(ItemLoader):
@@ -178,7 +199,9 @@ class A51jobItem(scrapy.Item):
     # 岗位名称
     positionName = scrapy.Field()
     # 工资
-    salary = scrapy.Field()
+    salary = scrapy.Field(
+        input_processor=MapCompose(salary_convert)
+    )
     # 工作年限
     workYear = scrapy.Field()
     # 学历
@@ -201,3 +224,26 @@ class A51jobItem(scrapy.Item):
     city = scrapy.Field()
     # 抓取日期
     crawl_date = scrapy.Field()
+
+    def get_insert_sql(self):
+        insert_sql = """
+                        insert into 51job(positionID, positionName, salary, workYear, education, financeStage, companySize, companyName, industryField, longitude, latitude, city, crawl_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE salary=VALUES(salary), workYear=VALUES(workYear), education=VALUES(education), crawl_date=VALUES(crawl_date);
+                    """
+        params = (
+            self.get("positionID", 0),
+            self.get("positionName", ''),
+            self.get('salary', ''),
+            self.get("workYear", ''),
+            self.get("education", ''),
+            self.get('financeStage', ''),
+            self.get('companySize', ''),
+            self.get('companyName', ''),
+            self.get('industryField', ''),
+            self.get('longitude', 0),
+            self.get('latitude', 0),
+            self.get('city', ''),
+            self.get('crawl_date', '')
+        )
+        return insert_sql, params

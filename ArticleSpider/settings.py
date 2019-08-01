@@ -55,7 +55,7 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
    # 'ArticleSpider.middlewares.ArticlespiderDownloaderMiddleware': 543,
-    'ArticleSpider.middlewares.JSPageMiddleware': 1,
+   #  'ArticleSpider.middlewares.JSPageMiddleware': 1,
 }
 
 # Enable or disable extensions
@@ -106,4 +106,4 @@ MYSQL_HOST = "localhost"
 MYSQL_DBNAME = "article_spider"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "123456"
-MYSQL_PORT = 8889
+MYSQL_PORT = 3306
