@@ -11,7 +11,7 @@ from ArticleSpider.items import ArticleItemLoader, A51jobItem
 class A51jobSpider(scrapy.Spider):
     name = '51job'
     allowed_domains = ['search.51job.com']
-    start_urls = ['https://search.51job.com/list/000000,000000,0000,00,9,99,python,2,1.html?lang=c&stype=&postchannel=0000&workyear=99&cotype=99&degreefrom=99&jobterm=99&companysize=99&providesalary=99&lonlat=0%2C0&radius=-1&ord_field=0&confirmdate=9&fromType=&dibiaoid=0&address=&line=&specialarea=00&from=&welfare=']
+    start_urls = ['https://search.51job.com/list/000000,000000,0000,00,9,99,Python,2,1.html?lang=c&stype=&postchannel=0000&workyear=99&cotype=99&degreefrom=99&jobterm=99&companysize=99&providesalary=99&lonlat=0%2C0&radius=-1&ord_field=0&confirmdate=9&fromType=&dibiaoid=0&address=&line=&specialarea=00&from=&welfare=']
 
     def parse(self, response):
         jobs_nodes = response.css("#resultList .el .t1 a::attr(href)").extract()
@@ -32,11 +32,14 @@ class A51jobSpider(scrapy.Spider):
         msg_list = response.css(".tHeader .msg.ltype::text").extract()
         work_year = msg_list[1].strip()
         education = msg_list[2].strip()
+        edu_option = ['初中及以下', '高中', '中技', '中专', '大专', '本科', '硕士', '博士']
+        if education not in edu_option:
+            education = ''
         city = msg_list[0].strip()
 
         jobid = response.css("#hidJobID::attr(value)").extract()[0]
 
-        longitude, latitude = self.get_coordinate(jobid)
+        # longitude, latitude = self.get_coordinate(jobid)
 
         item_loader = ArticleItemLoader(item=A51jobItem(), response=response)
         item_loader.add_css('positionID', "#hidJobID::attr(value)")
@@ -49,8 +52,8 @@ class A51jobSpider(scrapy.Spider):
         item_loader.add_xpath('companySize', "//div[@class='tBorderTop_box']/div[@class='com_tag']/p[2]/text()")
         item_loader.add_css('companyName', ".cname .catn::attr(title)")
         item_loader.add_xpath('industryField', "//div[@class='tBorderTop_box']/div[@class='com_tag']/p[3]/@title")
-        item_loader.add_value('longitude', longitude)
-        item_loader.add_value('latitude', latitude)
+        # item_loader.add_value('longitude', longitude)
+        # item_loader.add_value('latitude', latitude)
         item_loader.add_value('crawl_date', datetime.date.today())
 
         job_item = item_loader.load_item()

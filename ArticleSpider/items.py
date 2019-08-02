@@ -216,10 +216,6 @@ class A51jobItem(scrapy.Item):
     companyName = scrapy.Field()
     # 业务方向
     industryField = scrapy.Field()
-    # 经度
-    longitude = scrapy.Field()
-    # 纬度
-    latitude = scrapy.Field()
     # 城市
     city = scrapy.Field()
     # 抓取日期
@@ -227,8 +223,8 @@ class A51jobItem(scrapy.Item):
 
     def get_insert_sql(self):
         insert_sql = """
-                        insert into 51job(positionID, positionName, salary, workYear, education, financeStage, companySize, companyName, industryField, longitude, latitude, city, crawl_date)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        insert into 51job_python(positionID, positionName, salary, workYear, education, financeStage, companySize, companyName, industryField, city, crawl_date)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON DUPLICATE KEY UPDATE salary=VALUES(salary), workYear=VALUES(workYear), education=VALUES(education), crawl_date=VALUES(crawl_date);
                     """
         params = (
@@ -241,8 +237,6 @@ class A51jobItem(scrapy.Item):
             self.get('companySize', ''),
             self.get('companyName', ''),
             self.get('industryField', ''),
-            self.get('longitude', 0),
-            self.get('latitude', 0),
             self.get('city', ''),
             self.get('crawl_date', '')
         )
